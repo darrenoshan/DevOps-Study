@@ -1,0 +1,11 @@
+---
+- name: ensure services are started
+  systemd: name={{ item }} state=started
+  loop: 
+    - sysstat
+    - vnstat
+    - docker
+    - vmtoolsd
+    - chronyd
+    - crond
+    - sshd

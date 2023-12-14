@@ -1,0 +1,27 @@
+---
+- name: Upgrade all packages
+  ansible.builtin.dnf:
+    name: "*"
+    state: latest
+    allowerasing: yes
+  when: ansible_distribution == "Fedora"
+
+- name: install packages
+  ansible.builtin.dnf:
+    # name: "{{ item }}"
+    name: "{{ pkg }}"
+    state: latest
+    allowerasing: yes
+  # loop: "{{ pkg }}"
+  when: ansible_distribution == "Fedora"
+
+- name: ensure services are started
+  systemd: name={{ item }} state=started
+  loop: 
+    - sysstat
+    - vnstat
+    - docker
+    - vmtoolsd
+    - chronyd
+    - crond
+    - sshd

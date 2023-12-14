@@ -1,0 +1,20 @@
+---
+# DNF CONFIG
+# DNF UPDATE
+# ENABLE rpmfusion
+- name: preconfig.yml
+  import_tasks: preconfig.yml
+  tags: preconfig
+
+- name: repos.yml
+  import_tasks: repos.yml
+  tags: repos
+
+- name: dnf.yml
+  import_tasks: dnf.yml
+  tags: dnf
+
+- name: postconfig.yml
+  import_tasks: postconfig.yml
+  tags: postconfig
+...

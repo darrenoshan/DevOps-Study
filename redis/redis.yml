@@ -1,0 +1,11 @@
+version: '3'
+services:
+  redisdb1:
+    image: redis:alpine
+    container_name: redisdb1
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:6379:6379/tcp"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ChangeThisPass
+    volumes: 
+      - ./redisdb1/data:/data

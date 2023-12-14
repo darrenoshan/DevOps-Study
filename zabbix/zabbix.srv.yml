@@ -1,0 +1,56 @@
+version: '3'
+services:
+######----ZABBIX----######
+  zabbix-srv:
+    image: zabbix/zabbix-server-pgsql:alpine-latest
+    container_name: zabbix-srv
+    ports:
+    - "10051:10051"
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /etc/timezone:/etc/timezone:ro
+    environment:
+      DB_SERVER_HOST: zabbix-db
+      DB_SERVER_PORT: 5432
+      POSTGRES_USER: zabbix
+      POSTGRES_DB: zabbix
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      ZBX_CACHESIZE: 256M
+      ZBX_HISTORYCACHESIZE: 256M
+      ZBX_HISTORYINDEXCACHESIZE: 256M
+      ZBX_TRENDCACHESIZE: 256M
+      ZBX_VALUECACHESIZE: 256M
+      # Environment Variables From ==>  https://hub.docker.com/r/zabbix/zabbix-server-mysql/
+      # Environment Variables From ==>  https://www.zabbix.com/documentation/current/en/manual/appendix/config/zabbix_server
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+  zabbix-front:
+    image: zabbix/zabbix-web-apache-pgsql:alpine-latest
+    container_name: zabbix-front
+    ports:
+    - "0.0.0.0:191:8080"
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /etc/timezone:/etc/timezone:ro
+    environment:
+      ZBX_SERVER_HOST: "zabbix-srv"
+      DB_SERVER_HOST: "zabbix-db"
+      DB_SERVER_PORT: 5432
+      POSTGRES_USER: zabbix
+      POSTGRES_DB: zabbix
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PHP_TZ: "Asia/Tehran"
+  zabbix-db:
+    image: postgres:15-alpine
+    container_name: zabbix-db
+    restart: unless-stopped
+    volumes:
+    - ./monitor/zabbix-db:/var/lib/postgresql/data:rw
+    environment:
+      POSTGRES_USER: zabbix
+      POSTGRES_DB: zabbix
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+

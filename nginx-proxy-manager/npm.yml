@@ -1,0 +1,17 @@
+version: '3'
+services:
+  lbgw_public:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    container_name: lbgw_public
+    ports:
+      - '0.0.0.0:80:80' # Public HTTP Port
+      - '0.0.0.0:443:443' # Public HTTPS Port
+      - '0.0.0.0:9991:81' # Admin Web Port
+    environment:
+      DB_SQLITE_FILE: "/data/database.sqlite"
+      DISABLE_IPV6: 'true'
+    volumes:
+      - ./lbgw_public/data:/data
+      - ./lbgw_public/letsencrypt:/etc/letsencrypt
+
